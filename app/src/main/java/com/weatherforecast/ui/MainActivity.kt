@@ -4,15 +4,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.weatherforecast.R
+import com.weatherforecast.data.OpenWeatherApiService
+import com.weatherforecast.data.network.Repsonse.CityResponse
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    public lateinit var navController : NavController
+    lateinit var navController : NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +27,15 @@ class MainActivity : AppCompatActivity() {
         bottom_nav.setupWithNavController(navController)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
+
+        val apiService = OpenWeatherApiService()
+
+        var currentWeatherResponse : List<CityResponse>
+        GlobalScope.launch ( Dispatchers.Main ) {
+            currentWeatherResponse = apiService.getCities()
+        }
+
+        val i = 5
     }
 
     override fun onSupportNavigateUp(): Boolean {
